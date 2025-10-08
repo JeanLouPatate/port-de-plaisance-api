@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tableau de bord - Port de Plaisance</title>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="/">Accueil</a></li>
+      <li><a href="/catways">Catways</a></li>
+      <li><a href="/reservations">Réservations</a></li>
+      <li><a href="/users">Utilisateurs</a></li>
+      <li><a href="/docs">Documentation API</a></li>
+      <li><a href="/logout">Se déconnecter</a></li>
+    </ul>
+  </nav>
+
+  <h1>Bienvenue <%= username %> !</h1>
+  <p>Email : <%= email %></p>
+  <p>Date du jour : <%= currentDate %></p>
+
+  <h2>Réservations en cours</h2>
+  <% if (reservations.length === 0) { %>
+    <p>Aucune réservation en cours.</p>
+  <% } else { %>
+    <table border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Catway Number</th>
+          <th>Client</th>
+          <th>Bateau</th>
+          <th>Début</th>
+          <th>Fin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% reservations.forEach(reservation => { %>
+          <tr>
+            <td><%= reservation.catwayNumber %></td>
+            <td><%= reservation.clientName %></td>
+            <td><%= reservation.boatName %></td>
+            <td><%= new Date(reservation.startDate).toLocaleDateString() %></td>
+            <td><%= new Date(reservation.endDate).toLocaleDateString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+
+</body>
+</html>
