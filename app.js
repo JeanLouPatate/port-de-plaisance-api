@@ -1,47 +1,52 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const session = require('express-session');
 const path = require('path');
-const userRoutes = require('./routes/users');
-const catwayRoutes = require('./routes/catways');
-const reservationRoutes = require('./routes/reservations');
-
-app.use('/users', userRoutes);
-app.use('/catways', catwayRoutes);
-app.use('/', reservationRoutes); // Les routes de reservations incluent /catways/:id/reservations
-
-
+const cookieParser = require('cookie-parser'); // ✅ Ajout nécessaire
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Connexion à MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connecté'))
-  .catch(err => console.error('Erreur MongoDB:', err));
+// ✅ Middleware cookie-parser
+app.use(cookieParser());
 
-// Middlewares
+// ✅ Middleware body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session (simple pour commencer)
-app.use(session({
-  secret: 'secretkey', // idéalement dans .env
-  resave: false,
-  saveUninitialized: false,
-}));
-
-// Moteur de templates
+// ✅ View engine (EJS)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Routes basiques
-app.get('/', (req, res) => {
-  res.render('index', { user: req.session.user || null });
+// ✅ Connexion MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ Connecté à MongoDB Atlas'))
+  .catch((err) => console.error('❌ Erreur de connexion MongoDB :', err));
+
+// ✅ Middleware de log des requêtes
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
 });
 
-// Lancement serveur
-app.listen(PORT, () => console.log(`Serveur lancé sur http://localhost:${PORT}`));
+// ✅ Routes
+const homeRoutes = require('./routes/home');
+app.use('/', homeRoutes);
 
+app.use('/api/catways', require('./routes/catways'));
+app.use('/api/reservations', require('./routes/reservations'));
+
+// ✅ Ta route /api/users (modifiée dans users.js)
+app.use('/api/users', require('./routes/users'));
+
+// ✅ Authentification
+app.use('/login', require('./routes/auth'));
+
+// ✅ Route racine (accueil simple si homeRoutes absent)
+app.get('/', (req, res) => {
+  res.send('Bienvenue sur l’API du port de plaisance ⛵');
+});
+
+// ✅ Lancement serveur
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Serveur lancé sur http://localhost:${PORT}`);
+});
