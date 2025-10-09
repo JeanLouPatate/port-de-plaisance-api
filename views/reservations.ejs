@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des Réservations</title>
+</head>
+<body>
+  <h1>Réservations</h1>
+  <a href="/dashboard">Retour au tableau de bord</a>
+
+  <h2>Nouvelle réservation</h2>
+  <form method="POST" action="/reservations">
+    <label>Numéro catway :</label><input type="number" name="catwayNumber" required><br>
+    <label>Client :</label><input type="text" name="clientName" required><br>
+    <label>Bateau :</label><input type="text" name="boatName" required><br>
+    <label>Début :</label><input type="date" name="startDate" required><br>
+    <label>Fin :</label><input type="date" name="endDate" required><br>
+    <button type="submit">Réserver</button>
+  </form>
+
+  <h2>Réservations existantes</h2>
+  <table border="1">
+    <tr>
+      <th>Catway</th>
+      <th>Client</th>
+      <th>Bateau</th>
+      <th>Début</th>
+      <th>Fin</th>
+      <th>Actions</th>
+    </tr>
+    <% reservations.forEach(r => { %>
+      <tr>
+        <td><%= r.catwayNumber %></td>
+        <td><%= r.clientName %></td>
+        <td><%= r.boatName %></td>
+        <td><%= new Date(r.startDate).toLocaleDateString() %></td>
+        <td><%= new Date(r.endDate).toLocaleDateString() %></td>
+        <td>
+          <form action="/reservations/<%= r._id %>?_method=DELETE" method="POST">
+            <button type="submit" onclick="return confirm('Supprimer cette réservation ?')">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Documentation API - Port de Plaisance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      line-height: 1.6;
+      background: #f9f9f9;
+    }
+    h1, h2 {
+      color: #004080;
+    }
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    ul {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+    code {
+      background: #eee;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Documentation de l’API - Port de Plaisance</h1>
+  <p><a href="/dashboard">← Retour au tableau de bord</a></p>
+
+  <section>
+    <h2>Introduction</h2>
+    <p>Cette API permet de gérer le port de plaisance de Russell, incluant la gestion des catways, des réservations et des utilisateurs.</p>
+    <p>Elle est conçue pour être utilisée par les applications front-end ou des clients tiers afin de manipuler les données du port.</p>
+  </section>
+
+  <section>
+    <h2>Où est-elle hébergée ?</h2>
+    <p>L’API est hébergée sur un serveur Node.js connecté à une base de données MongoDB Atlas.</p>
+    <p>L’URL de base est : <code>http://localhost:3000</code> (en local) ou l’adresse du serveur de production.</p>
+  </section>
+
+  <section>
+    <h2>Authentification</h2>
+    <p>L’API utilise un système d’authentification par jeton JWT (JSON Web Token).</p>
+    <ul>
+      <li>Pour se connecter, envoyez un <code>POST /login</code> avec <code>email</code> et <code>password</code>.</li>
+      <li>Un token est stocké en cookie HTTPOnly pour sécuriser les requêtes.</li>
+      <li>Pour se déconnecter, utilisez <code>GET /logout</code>.</li>
+      <li>Certaines routes sont protégées et nécessitent d’être connecté pour y accéder.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Comment utiliser l’API ?</h2>
+    <p>Les endpoints REST sont organisés sous les préfixes suivants :</p>
+    <ul>
+      <li><code>/api/catways</code> pour gérer les catways</li>
+      <li><code>/api/reservations</code> pour gérer les réservations</li>
+      <li><code>/api/users</code> pour gérer les utilisateurs</li>
+    </ul>
+    <p>Les données s’échangent au format JSON. Pour les requêtes POST, PUT, envoyer le corps en JSON.</p>
+    <p>Exemple de requête curl pour récupérer les catways :</p>
+    <pre><code>curl http://localhost:3000/api/catways</code></pre>
+  </section>
+
+  <section>
+    <h2>Endpoints disponibles</h2>
+
+    <h3>Catways</h3>
+    <ul>
+      <li>GET <code>/api/catways</code> : Liste tous les catways</li>
+      <li>GET <code>/api/catways/:id</code> : Récupère un catway par son ID</li>
+      <li>POST <code>/api/catways</code> : Crée un catway (protégé)</li>
+      <li>PUT <code>/api/catways/:id</code> : Modifie un catway (protégé)</li>
+      <li>DELETE <code>/api/catways/:id</code> : Supprime un catway (protégé)</li>
+    </ul>
+
+    <h3>Réservations</h3>
+    <ul>
+      <li>GET <code>/api/reservations</code> : Liste toutes les réservations</li>
+      <li>GET <code>/api/reservations/:id</code> : Récupère une réservation par ID</li>
+      <li>POST <code>/api/reservations</code> : Crée une réservation (protégé)</li>
+      <li>PUT <code>/api/reservations/:id</code> : Modifie une réservation (protégé)</li>
+      <li>DELETE <code>/api/reservations/:id</code> : Supprime une réservation (protégé)</li>
+    </ul>
+
+    <h3>Utilisateurs</h3>
+    <ul>
+      <li>GET <code>/api/users</code> : Liste tous les utilisateurs</li>
+      <li>GET <code>/api/users/:email</code> : Récupère un utilisateur par email</li>
+      <li>POST <code>/api/users</code> : Crée un utilisateur (protégé)</li>
+      <li>PUT <code>/api/users/:email</code> : Modifie un utilisateur (protégé)</li>
+      <li>DELETE <code>/api/users/:email</code> : Supprime un utilisateur (protégé)</li>
+    </ul>
+
+    <h3>Authentification</h3>
+    <ul>
+      <li>POST <code>/login</code> : Connexion (requiert email et mot de passe)</li>
+      <li>GET <code>/logout</code> : Déconnexion</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Contact & Support</h2>
+    <p>Pour toute question ou problème, merci de contacter l’administrateur du Port de Plaisance.</p>
+  </section>
+</body>
+</html>
