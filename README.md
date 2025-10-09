@@ -95,9 +95,9 @@ Tu peux aussi tester les routes GET, POST, DELETE via Postman, Insomnia ou Thund
  Recherche et filtres dans les tableaux
 
 📮 Auteurs / Contributeurs
-👤 Projet réalisé dans le cadre du CEF - Formation Développeur Fullstack JS
+👤 Projet réalisé dans le cadre du CEF - Formation Développeur Fullstack 
 
-💻 Développé par : [TonNom] (à remplacer)
+💻 Développé par : Loulou
 
 📄 Licence
 Ce projet est librement réutilisable dans un contexte éducatif ou personnel.
