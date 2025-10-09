@@ -1,15 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
-const Reservation = require('../models/reservation'); // Assure-toi que ce modèle est correct
+const fs = require('fs');
+const path = require('path');
 
-router.get('/dashboard', authMiddleware, async (req, res) => {
+// Dashboard (protégé)
+router.get('/dashboard', authMiddleware, (req, res) => {
   try {
-    // On récupère les réservations dont la date de fin est >= aujourd'hui (en cours)
+    const dataPath = path.join(__dirname, '..', 'data', 'reservations.json');
+    const reservationsRaw = fs.readFileSync(dataPath, 'utf-8');
+    const reservations = JSON.parse(reservationsRaw);
+
     const today = new Date();
-    const reservations = await Reservation.find({
-      endDate: { $gte: today }
-    }).sort({ startDate: 1 }).lean();
 
     res.render('dashboard', {
       username: req.user.username,
@@ -21,6 +23,17 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
     console.error('Erreur lors du chargement du dashboard :', error);
     res.status(500).send('Erreur serveur');
   }
+});
+
+// Page d’accueil (formulaire de connexion)
+router.get('/', (req, res) => {
+  const error = req.query.error || null;
+  // On ajoute email et password vides
+  res.render('home', { 
+    error,
+    email: '',
+    password: ''
+  });
 });
 
 module.exports = router;

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des Catways</title>
+</head>
+<body>
+  <h1>Catways</h1>
+  <a href="/dashboard">Retour au tableau de bord</a>
+
+  <h2>Ajouter un catway</h2>
+  <form method="POST" action="/catways">
+    <label>Numéro :</label><input type="number" name="catwayNumber" required><br>
+    <label>Type :</label>
+    <select name="catwayType" required>
+      <option value="short">Court</option>
+      <option value="long">Long</option>
+    </select><br>
+    <label>État :</label><input type="text" name="catwayState" required><br>
+    <button type="submit">Ajouter</button>
+  </form>
+
+  <h2>Liste des catways</h2>
+  <table border="1">
+    <tr>
+      <th>Numéro</th>
+      <th>Type</th>
+      <th>État</th>
+      <th>Actions</th>
+    </tr>
+    <% catways.forEach(catway => { %>
+      <tr>
+        <td><%= catway.catwayNumber %></td>
+        <td><%= catway.catwayType %></td>
+        <td><%= catway.catwayState %></td>
+        <td>
+          <form action="/catways/<%= catway._id %>?_method=PUT" method="POST" style="display:inline-block;">
+            <input type="text" name="catwayState" placeholder="Nouvel état" required>
+            <button type="submit">Modifier</button>
+          </form>
+          <form action="/catways/<%= catway._id %>?_method=DELETE" method="POST" style="display:inline-block;">
+            <button type="submit" onclick="return confirm('Supprimer ce catway ?')">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</body>
+</html>

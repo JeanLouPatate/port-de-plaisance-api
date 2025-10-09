@@ -2,65 +2,43 @@ const express = require('express');
 const router = express.Router();
 const Reservation = require('../models/reservation');
 const auth = require('../middleware/authMiddleware');
+const methodOverride = require('method-override');
 
-// ✅ GET /api/reservations → Liste de toutes les réservations (protégé)
+router.use(methodOverride('_method'));
+
+// API REST JSON déjà existantes (tu les gardes)
+
+// --- Routes pour affichage / gestion via EJS ---
+
+// Afficher la page des réservations
 router.get('/', auth, async (req, res) => {
   try {
-    const reservations = await Reservation.find();
-    res.json(reservations);
+    const reservations = await Reservation.find().lean();
+    res.render('reservations', { reservations });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur serveur' });
+    res.status(500).send('Erreur serveur');
   }
 });
 
-// ✅ GET /api/reservations/:id → Détail d'une réservation (protégé)
-router.get('/:id', auth, async (req, res) => {
-  try {
-    const reservation = await Reservation.findById(req.params.id);
-    if (!reservation) {
-      return res.status(404).json({ message: 'Réservation non trouvée' });
-    }
-    res.json(reservation);
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur serveur' });
-  }
-});
-
-// ✅ POST /api/reservations → Créer une réservation (protégé)
+// Créer une réservation via formulaire EJS
 router.post('/', auth, async (req, res) => {
   try {
     const newReservation = new Reservation(req.body);
     await newReservation.save();
-    res.status(201).json(newReservation);
+    res.redirect('/api/reservations');
   } catch (error) {
     console.error('Erreur création réservation:', error);
-    res.status(400).json({ message: 'Erreur lors de la création de la réservation.' });
+    res.status(400).send('Erreur lors de la création de la réservation.');
   }
 });
 
-// ✅ PUT /api/reservations/:id → Modifier une réservation (protégé)
-router.put('/:id', auth, async (req, res) => {
-  try {
-    const updatedReservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedReservation) {
-      return res.status(404).json({ message: 'Réservation non trouvée' });
-    }
-    res.json(updatedReservation);
-  } catch (error) {
-    res.status(400).json({ message: 'Erreur lors de la mise à jour de la réservation.' });
-  }
-});
-
-// ✅ DELETE /api/reservations/:id → Supprimer une réservation (protégé)
+// Supprimer une réservation via formulaire EJS
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const deleted = await Reservation.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ message: 'Réservation non trouvée' });
-    }
-    res.json({ message: 'Réservation supprimée' });
+    await Reservation.findByIdAndDelete(req.params.id);
+    res.redirect('/api/reservations');
   } catch (error) {
-    res.status(500).json({ message: 'Erreur serveur' });
+    res.status(500).send('Erreur serveur');
   }
 });
 

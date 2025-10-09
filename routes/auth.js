@@ -3,8 +3,13 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-// POST /login
-router.post('/login', async (req, res) => {
+// GET /login — Affiche formulaire de connexion
+router.get('/', (req, res) => {
+  res.render('home', { error: null });
+});
+
+// POST /login — Traite la connexion
+router.post('/', async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -19,10 +24,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
 
-    // Stockage en cookie HTTPOnly
     res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 }); // 1 jour
-
-    // Redirection vers le dashboard
     res.redirect('/dashboard');
   } catch (err) {
     console.error(err);
@@ -30,7 +32,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// GET /logout
+// GET /logout — Déconnexion
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
   res.redirect('/');

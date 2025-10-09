@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des Utilisateurs</title>
+</head>
+<body>
+  <h1>Utilisateurs</h1>
+  <a href="/dashboard">Retour au tableau de bord</a>
+
+  <h2>Ajouter un utilisateur</h2>
+  <form method="POST" action="/users">
+    <label>Nom d'utilisateur :</label><input type="text" name="username" required><br>
+    <label>Email :</label><input type="email" name="email" required><br>
+    <label>Mot de passe :</label><input type="password" name="password" required><br>
+    <button type="submit">Créer</button>
+  </form>
+
+  <h2>Liste des utilisateurs</h2>
+  <table border="1">
+    <tr>
+      <th>Nom</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
+    <% users.forEach(u => { %>
+      <tr>
+        <td><%= u.username %></td>
+        <td><%= u.email %></td>
+        <td>
+          <form action="/users/<%= u.email %>?_method=DELETE" method="POST">
+            <button type="submit" onclick="return confirm('Supprimer cet utilisateur ?')">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</body>
+</html>

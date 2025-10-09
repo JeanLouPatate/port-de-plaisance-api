@@ -16,10 +16,10 @@
   <h2>Connexion</h2>
   <form method="POST" action="/login">
     <label for="email">Email :</label>
-    <input type="email" name="email" required>
+    <input type="email" name="email" value="<%= email %>" required>
     <br>
     <label for="password">Mot de passe :</label>
-    <input type="password" name="password" required>
+    <input type="password" name="password" value="<%= password %>" required>
     <br>
     <button type="submit">Se connecter</button>
   </form>
