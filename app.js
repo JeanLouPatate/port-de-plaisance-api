@@ -9,6 +9,8 @@ const app = express();
 
 app.use(methodOverride('_method')); // OK ici, après création de app
 
+app.use(express.static(path.join(__dirname, 'public'))); // CSS
+
 // Middleware
 app.use(cookieParser());
 app.use(express.json());
