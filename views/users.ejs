@@ -9,10 +9,16 @@
   <a href="/dashboard">Retour au tableau de bord</a>
 
   <h2>Ajouter un utilisateur</h2>
-  <form method="POST" action="/users">
-    <label>Nom d'utilisateur :</label><input type="text" name="username" required><br>
-    <label>Email :</label><input type="email" name="email" required><br>
-    <label>Mot de passe :</label><input type="password" name="password" required><br>
+  <form method="POST" action="/api/users" autocomplete="off">
+    <label>Nom d'utilisateur :</label>
+    <input type="text" name="username" required autocomplete="off"><br>
+
+    <label>Email :</label>
+    <input type="email" name="email" required autocomplete="off"><br>
+
+    <label>Mot de passe :</label>
+    <input type="password" name="password" required autocomplete="off"><br>
+
     <button type="submit">Créer</button>
   </form>
 
@@ -28,7 +34,7 @@
         <td><%= u.username %></td>
         <td><%= u.email %></td>
         <td>
-          <form action="/users/<%= u.email %>?_method=DELETE" method="POST">
+          <form action="/api/users/<%= u.email %>?_method=DELETE" method="POST">
             <button type="submit" onclick="return confirm('Supprimer cet utilisateur ?')">Supprimer</button>
           </form>
         </td>

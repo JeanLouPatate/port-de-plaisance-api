@@ -49,18 +49,52 @@ app.get('/catways', async (req, res) => {
   }
 });
 
-// *** Nouvelles routes HTML ***
-
-// Page réservations
-app.get('/reservations', async (req, res) => {
+// ✅ Route pour ajouter un catway (POST depuis le formulaire HTML)
+app.post('/catways', async (req, res) => {
   try {
-    const reservations = await Reservation.find().lean();
-    res.render('reservations', { reservations });
+    const { catwayNumber, catwayType, catwayState } = req.body;
+    await Catway.create({ catwayNumber, catwayType, catwayState });
+    res.redirect('/catways');
   } catch (err) {
-    console.error('Erreur chargement réservations :', err);
+    console.error('Erreur ajout catway :', err);
     res.status(500).send('Erreur serveur');
   }
 });
+
+// ✅ Route pour modifier un catway (PUT depuis le formulaire HTML)
+app.put('/catways/:id', async (req, res) => {
+  try {
+    await Catway.findByIdAndUpdate(req.params.id, {
+      catwayState: req.body.catwayState
+    });
+    res.redirect('/catways');
+  } catch (err) {
+    console.error('Erreur modification catway :', err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
+// ✅ Route pour supprimer un catway (DELETE depuis le formulaire HTML)
+app.delete('/catways/:id', async (req, res) => {
+  try {
+    await Catway.findByIdAndDelete(req.params.id);
+    res.redirect('/catways');
+  } catch (err) {
+    console.error('Erreur suppression catway :', err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
+// *** IMPORTANT : suppression de la route GET /reservations pour éviter conflit ***
+// app.get('/reservations', async (req, res) => {
+//   try {
+//     const reservations = await Reservation.find().lean();
+//     res.render('reservations', { reservations });
+//   } catch (err) {
+//     console.error('Erreur chargement réservations :', err);
+//     res.status(500).send('Erreur serveur');
+//   }
+// });
 
 // Page utilisateurs
 app.get('/users', async (req, res) => {
@@ -78,9 +112,12 @@ app.get('/docs', (req, res) => {
   res.render('docs');
 });
 
+// *** 🔧 AJOUT DES ROUTES RESERVATIONS ***
+app.use('/api/reservations', require('./routes/reservationsAPI'));  // Pour l'API JSON
+app.use('/reservations', require('./routes/reservationsHTML'));     // Pour la page HTML
+
 // Routes API REST (garde les comme ils sont)
 app.use('/api/catways', require('./routes/catways'));
-app.use('/api/reservations', require('./routes/reservations'));
 app.use('/api/users', require('./routes/users'));
 
 // Authentification (login/logout)
@@ -88,7 +125,6 @@ app.use('/login', require('./routes/auth'));
 
 // Route déconnexion : redirige vers la page d'accueil (login)
 app.get('/logout', (req, res) => {
-  // ici tu peux aussi détruire session si tu en as une
   res.redirect('/');
 });
 

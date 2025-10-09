@@ -34,10 +34,13 @@
         <td><%= catway.catwayType %></td>
         <td><%= catway.catwayState %></td>
         <td>
+          <!-- Formulaire de modification -->
           <form action="/catways/<%= catway._id %>?_method=PUT" method="POST" style="display:inline-block;">
             <input type="text" name="catwayState" placeholder="Nouvel état" required>
             <button type="submit">Modifier</button>
           </form>
+
+          <!-- Formulaire de suppression -->
           <form action="/catways/<%= catway._id %>?_method=DELETE" method="POST" style="display:inline-block;">
             <button type="submit" onclick="return confirm('Supprimer ce catway ?')">Supprimer</button>
           </form>

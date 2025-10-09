@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
-const fs = require('fs');
-const path = require('path');
+const Reservation = require('../models/reservation'); // modèle mongoose
 
 // Dashboard (protégé)
-router.get('/dashboard', authMiddleware, (req, res) => {
+router.get('/dashboard', authMiddleware, async (req, res) => {
   try {
-    const dataPath = path.join(__dirname, '..', 'data', 'reservations.json');
-    const reservationsRaw = fs.readFileSync(dataPath, 'utf-8');
-    const reservations = JSON.parse(reservationsRaw);
+    // Récupérer toutes les réservations depuis MongoDB
+    const reservations = await Reservation.find().lean();
 
     const today = new Date();
 
@@ -28,7 +26,6 @@ router.get('/dashboard', authMiddleware, (req, res) => {
 // Page d’accueil (formulaire de connexion)
 router.get('/', (req, res) => {
   const error = req.query.error || null;
-  // On ajoute email et password vides
   res.render('home', { 
     error,
     email: '',

@@ -47,6 +47,18 @@
             font-weight: bold;
             font-size: 1.2em;
         }
+        #refresh-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            vertical-align: middle;
+            margin-left: 10px;
+            color: #007BFF;
+        }
+        #refresh-btn:hover {
+            color: #0056b3;
+        }
     </style>
 </head>
 
@@ -66,35 +78,76 @@
     <p>Email : <%= email %></p>
     <p>Date du jour : <%= currentDate %></p>
 
-    <h2>Réservations en cours</h2>
+    <h2>
+      Réservations en cours
+      <button id="refresh-btn" title="Rafraîchir">🔄</button>
+    </h2>
 
-    <% if (reservations && reservations.length > 0) { %>
-        <table>
-            <caption>Liste des réservations valides</caption>
-            <thead>
+    <div id="reservations-container">
+      <!-- Le tableau sera injecté ici -->
+    </div>
+
+    <script>
+      async function fetchReservations() {
+        try {
+          const response = await fetch('/api/reservations');
+          if (!response.ok) throw new Error('Erreur lors du chargement des réservations');
+
+          const reservations = await response.json();
+
+          const container = document.getElementById('reservations-container');
+
+          if (!reservations.length) {
+            container.innerHTML = '<p>Aucune réservation en cours.</p>';
+            return;
+          }
+
+          let html = `
+            <table>
+              <caption>Liste des réservations valides</caption>
+              <thead>
                 <tr>
-                    <th>Catway numéro</th>
-                    <th>Client</th>
-                    <th>Bateau</th>
-                    <th>Début</th>
-                    <th>Fin</th>
+                  <th>Catway numéro</th>
+                  <th>Client</th>
+                  <th>Bateau</th>
+                  <th>Début</th>
+                  <th>Fin</th>
                 </tr>
-            </thead>
-            <tbody>
-                <% reservations.forEach(reservation => { %>
-                    <tr>
-                        <td><%= reservation.catwayNumber %></td>
-                        <td><%= reservation.clientName %></td>
-                        <td><%= reservation.boatName %></td>
-                        <td><%= new Date(reservation.startDate).toLocaleDateString() %></td>
-                        <td><%= new Date(reservation.endDate).toLocaleDateString() %></td>
-                    </tr>
-                <% }) %>
-            </tbody>
-        </table>
-    <% } else { %>
-        <p>Aucune réservation en cours.</p>
-    <% } %>
+              </thead>
+              <tbody>
+          `;
+
+          reservations.forEach(r => {
+            const startDate = new Date(r.startDate).toLocaleDateString();
+            const endDate = new Date(r.endDate).toLocaleDateString();
+
+            html += `
+              <tr>
+                <td>${r.catwayNumber}</td>
+                <td>${r.clientName}</td>
+                <td>${r.boatName}</td>
+                <td>${startDate}</td>
+                <td>${endDate}</td>
+              </tr>
+            `;
+          });
+
+          html += '</tbody></table>';
+
+          container.innerHTML = html;
+
+        } catch (error) {
+          console.error('Erreur:', error);
+          document.getElementById('reservations-container').innerHTML = '<p>Erreur lors du chargement des réservations.</p>';
+        }
+      }
+
+      // Chargement initial au chargement de la page
+      fetchReservations();
+
+      // Événement clic sur le bouton rafraîchir
+      document.getElementById('refresh-btn').addEventListener('click', fetchReservations);
+    </script>
 </body>
 
 </html>
